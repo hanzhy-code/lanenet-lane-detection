@@ -17,9 +17,9 @@ import numpy as np
 from sklearn.cluster import DBSCAN
 from sklearn.preprocessing import StandardScaler
 
-from config import global_config
+from local_utils.config_utils import parse_config_utils
 
-CFG = global_config.cfg
+CFG = parse_config_utils.lanenet_cfg
 
 
 def _morphological_process(image, kernel_size=5):
@@ -349,11 +349,8 @@ class LaneNetPostProcessor(object):
             if data_source == 'tusimple':
                 tmp_mask = np.zeros(shape=(720, 1280), dtype=np.uint8)
                 tmp_mask[tuple((np.int_(coords[:, 1] * 720 / 256), np.int_(coords[:, 0] * 1280 / 512)))] = 255
-            elif data_source == 'beec_ccd':
-                tmp_mask = np.zeros(shape=(1350, 2448), dtype=np.uint8)
-                tmp_mask[tuple((np.int_(coords[:, 1] * 1350 / 256), np.int_(coords[:, 0] * 2448 / 512)))] = 255
             else:
-                raise ValueError('Wrong data source now only support tusimple and beec_ccd')
+                raise ValueError('Wrong data source now only support tusimple')
             tmp_ipm_mask = cv2.remap(
                 tmp_mask,
                 self._remap_to_ipm_x,
@@ -393,11 +390,8 @@ class LaneNetPostProcessor(object):
             if data_source == 'tusimple':
                 start_plot_y = 240
                 end_plot_y = 720
-            elif data_source == 'beec_ccd':
-                start_plot_y = 820
-                end_plot_y = 1350
             else:
-                raise ValueError('Wrong data source now only support tusimple and beec_ccd')
+                raise ValueError('Wrong data source now only support tusimple')
             step = int(math.floor((end_plot_y - start_plot_y) / 10))
             for plot_y in np.linspace(start_plot_y, end_plot_y, step):
                 diff = single_lane_pt_y - plot_y

@@ -11,8 +11,8 @@ The main network architecture is as follows:
 
 ## Installation
 This software has only been tested on ubuntu 16.04(x64), python3.5, cuda-9.0, cudnn-7.0 with a GTX-1070 GPU. 
-To install this software you need tensorflow 1.10.0 and other version of tensorflow has not been tested but I think 
-it will be able to work properly in tensorflow above version 1.10. Other required package you may install them by
+To install this software you need tensorflow 1.12.0 and other version of tensorflow has not been tested but I think 
+it will be able to work properly in tensorflow above version 1.12. Other required package you may install them by
 
 ```
 pip3 install -r requirements.txt
@@ -30,7 +30,7 @@ download the model and put them in folder model/tusimple_lanenet_vgg/
 You can test a single image on the trained model as follows
 
 ```
-python tools/test_lanenet.py --weights_path ./model/tusimple_lanenet_vgg/tusimple_lanenet_vgg.ckpt 
+python tools/test_lanenet.py --weights_path /PATH/TO/YOUT/CKPT_FILE_PATH 
 --image_path ./data/tusimple_test_image/0.jpg
 ```
 The results are as follows:
@@ -55,7 +55,7 @@ If you want to evaluate the model on the whole tusimple test dataset you may cal
 ```
 python tools/evaluate_lanenet_on_tusimple.py 
 --image_dir ROOT_DIR/TUSIMPLE_DATASET/test_set/clips 
---weights_path ./model/tusimple_lanenet_vgg/tusimple_lanenet_vgg.ckpt 
+--weights_path /PATH/TO/YOUT/CKPT_FILE_PATH 
 --save_dir ROOT_DIR/TUSIMPLE_DATASET/test_set/test_output
 ```
 If you set the save_dir argument the result will be saved in that folder 
@@ -81,9 +81,7 @@ All your training image will be scaled into the same scale according to the conf
 Use the script here to generate the tensorflow records file
 
 ```
-python data_provider/lanenet_data_feed_pipline.py 
---dataset_dir ./data/training_data_example
---tfrecords_dir ./data/training_data_example/tfrecords
+python tools/make_tusimple_tfrecords.py 
 ```
 
 #### Train model
@@ -95,18 +93,7 @@ script to load your own pretrained parameters or you can implement your own base
 You may call the following script to train your own model
 
 ```
-python tools/train_lanenet.py 
---net vgg 
---dataset_dir ./data/training_data_example
--m 0
-```
-You can also continue the training process from the snapshot by
-```
-python tools/train_lanenet.py 
---net vgg 
---dataset_dir data/training_data_example/ 
---weights_path path/to/your/last/checkpoint
--m 0
+python tools/train_lanenet_tusimple.py 
 ```
 
 You may monitor the training process using tensorboard tools
@@ -171,6 +158,15 @@ script on your own.
 
 New model weights can be found [here](https://www.dropbox.com/sh/tnsf0lw6psszvy4/AAA81r53jpUI3wLsRW6TiPCya?dl=0)
 
+## Recently updates 2020.06.12
+
+Add real-time segmentation model BiseNetV2 as lanenet backbone. You may modify the
+config/tusimple_lanenet.yaml config file to choose the front-end of lanenet model.
+
+New lanenet model trainned based on BiseNetV2 can be found [here](https://www.dropbox.com/sh/0b6r0ljqi76kyg9/AADedYWO3bnx4PhK1BmbJkJKa?dl=0)
+
+The new model can reach 78 fps in single image inference process.
+
 ## MNN Project
 
 Add tools to convert lanenet tensorflow ckpt model into mnn model and deploy
@@ -206,3 +202,9 @@ The lanenet project refers to the following projects:
 
 - [MNN](https://github.com/alibaba/MNN)
 - [SimpleDBSCAN](https://github.com/CallmeNezha/SimpleDBSCAN)
+- [PaddleSeg](https://github.com/PaddlePaddle/PaddleSeg)
+
+## Contact
+
+Scan the following QR to disscuss :)
+![qr](./data/source_image/qr.jpg)

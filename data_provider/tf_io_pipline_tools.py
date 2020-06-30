@@ -16,14 +16,14 @@ import glog as log
 import numpy as np
 import tensorflow as tf
 
-from config import global_config
+from local_utils.config_utils import parse_config_utils
 
-CFG = global_config.cfg
+CFG = parse_config_utils.lanenet_cfg
 
-RESIZE_IMAGE_HEIGHT = CFG.TRAIN.IMG_HEIGHT + CFG.TRAIN.CROP_PAD_SIZE
-RESIZE_IMAGE_WIDTH = CFG.TRAIN.IMG_WIDTH + CFG.TRAIN.CROP_PAD_SIZE
-CROP_IMAGE_HEIGHT = CFG.TRAIN.IMG_HEIGHT
-CROP_IMAGE_WIDTH = CFG.TRAIN.IMG_WIDTH
+RESIZE_IMAGE_HEIGHT = CFG.AUG.TRAIN_CROP_SIZE[1] + CFG.AUG.CROP_PAD_SIZE
+RESIZE_IMAGE_WIDTH = CFG.AUG.TRAIN_CROP_SIZE[0] + CFG.AUG.CROP_PAD_SIZE
+CROP_IMAGE_HEIGHT = CFG.AUG.TRAIN_CROP_SIZE[1]
+CROP_IMAGE_WIDTH = CFG.AUG.TRAIN_CROP_SIZE[0]
 
 
 def int64_feature(value):
@@ -228,6 +228,7 @@ def normalize(gt_image, gt_binary_image, gt_instance_image):
         log.error(gt_instance_image.get_shape())
         raise ValueError('Input must be of size [height, width, C>0]')
 
+    gt_image = tf.cast(gt_image, dtype=tf.float32)
     gt_image = tf.subtract(tf.divide(gt_image, tf.constant(127.5, dtype=tf.float32)),
                            tf.constant(1.0, dtype=tf.float32))
 
